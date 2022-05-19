@@ -11,12 +11,12 @@ function getCountries() {
     .then(response => response.json())
     .then(res => {
         $loader.classList.remove('show')
-
         const data = res
 
-        const renderToHtml = data.map((data) => cardTemplate(data))
+        const renderToHtml = data.map((data) => cardTemplate(data)).join('')
 
         $cardBox.innerHTML = renderToHtml
+        searchCountry(res)
     })
 }
 
@@ -46,20 +46,30 @@ function cardTemplate({ area, capital, flags, name, population, region }) {
 
 const $searchInput = document.querySelector('.search')
 
-$searchInput.addEventListener('input', e => {
-  const value = e.target.value.toLowerCase()
+function searchCountry (data) {
+  $searchInput.addEventListener('input', e => {
+    let value = e.target.value.toLowerCase()
+    const newData = data.filter(({ name }) => {
+      return name.common.toLowerCase().includes(value)
+    })
+    console.log(newData)
+    $cardBox.innerHTML = newData.map((data) => cardTemplate(data)).join('')
+  })
+}
 
-  const todos = data
+// $searchInput.addEventListener('input', e => {
+//   const value = e.target.value.toLowerCase()
+//   console.log(value)
 
-  const newTodos = todos.filter(({ common, capital }) => common.toLowerCase().includes(value) || capital.toLowerCase().includes(value))
+//   const newTodos = todos.filter(({ common, capital }) => common.toLowerCase().includes(value) || capital.toLowerCase().includes(value))
 
-  if (newTodos.length !== 0) {
+//   if (newTodos.length !== 0) {
 
-    const renderToHtml = data.map((data) => cardTemplate(data))
+//     const renderToHtml = data.map((data) => cardTemplate(data))
 
-    $cardBox.innerHTML = renderToHtml
+//     $cardBox.innerHTML = renderToHtml
 
-  } else {
-    $container.innerHTML = `<h1 style="text-align: center; color: #000">Ничего не найдено!</h1>`
-  }
-})
+//   } else {
+//     $container.innerHTML = `<h1 style="text-align: center; color: #000">Ничего не найдено!</h1>`
+//   }
+// })
